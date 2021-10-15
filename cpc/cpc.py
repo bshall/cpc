@@ -2,11 +2,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from sklearn.cluster import KMeans
-from typing import Tuple
 
 URLS = {
     "cpc": "https://github.com/bshall/cpc/releases/download/v0.1/cpc-d7475380.pt",
     "kmeans50": "https://github.com/bshall/cpc/releases/download/v0.1/kmeans50-89accca9.pt",
+    "kmeans100": "https://github.com/bshall/cpc/releases/download/v0.1/kmeans100-c7eda98e.pt",
 }
 
 
@@ -89,26 +89,57 @@ class CPC(nn.Module):
         return c
 
 
-def cpc(
-    pretrained: bool = True, progress: bool = True, num_clusters: int = 50
-) -> Tuple[CPC, KMeans]:
+def cpc(pretrained: bool = True, progress: bool = True) -> CPC:
     r"""
     CPC-big model from https://arxiv.org/abs/2011.11588.
     Args:
         pretrained (bool): load pretrained weights into the model
         progress (bool): show progress bar when downloading model
-        num_clusters (int): number of clusters
     """
     cpc = CPC()
-    kmeans = KMeans(num_clusters)
     if pretrained:
         cpc_state = torch.hub.load_state_dict_from_url(URLS["cpc"], progress=progress)
-        kmeans_state = torch.hub.load_state_dict_from_url(URLS[f"kmeans{num_clusters}"])
-
         cpc.load_state_dict(cpc_state)
         cpc.eval()
+    return cpc
 
+
+def _kmeans(
+    num_clusters: int, pretrained: bool = True, progress: bool = True
+) -> KMeans:
+    r"""
+    k-means checkpoint from https://arxiv.org/abs/2108.00917.
+    Args:
+        num_clusters (int): number of clusters
+        pretrained (bool): load pretrained weights into the model
+        progress (bool): show progress bar when downloading model
+    """
+    kmeans = KMeans(num_clusters)
+    if pretrained:
+        kmeans_state = torch.hub.load_state_dict_from_url(
+            URLS[f"kmeans{num_clusters}"], progress=progress
+        )
         kmeans.__dict__["n_features_in_"] = kmeans_state["n_features_in_"]
         kmeans.__dict__["_n_threads"] = kmeans_state["_n_threads"]
         kmeans.__dict__["cluster_centers_"] = kmeans_state["cluster_centers_"].numpy()
-    return cpc, kmeans
+    return kmeans
+
+
+def kmeans50(pretrained: bool = True, progress: bool = True) -> KMeans:
+    r"""
+    k-means checkpoint from https://arxiv.org/abs/2108.00917 with 50 clusters.
+    Args:
+        pretrained (bool): load pretrained weights into the model
+        progress (bool): show progress bar when downloading model
+    """
+    return _kmeans(50, pretrained, progress)
+
+
+def kmeans100(pretrained: bool = True, progress: bool = True) -> KMeans:
+    r"""
+    k-means checkpoint from https://arxiv.org/abs/2108.00917 with 100 clusters.
+    Args:
+        pretrained (bool): load pretrained weights into the model
+        progress (bool): show progress bar when downloading model
+    """
+    return _kmeans(100, pretrained, progress)

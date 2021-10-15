@@ -24,7 +24,7 @@ class ChannelNorm(nn.Module):
         nn.init.ones_(self.weight)
         nn.init.zeros_(self.bias)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         mean = x.mean(dim=1, keepdim=True)
         var = x.var(dim=1, keepdim=True)
         x = (x - mean) * torch.rsqrt(var + self.epsilon)
@@ -47,7 +47,7 @@ class Encoder(nn.Module):
         self.conv4 = nn.Conv1d(channels, channels, 4, stride=2, padding=1)
         self.norm4 = ChannelNorm(channels)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = F.relu(self.norm0(self.conv0(x)))
         x = F.relu(self.norm1(self.conv1(x)))
         x = F.relu(self.norm2(self.conv2(x)))
@@ -62,11 +62,11 @@ class Context(nn.Module):
         self.lstm = nn.LSTM(512, 512, batch_first=True, num_layers=2)
         self.h = None
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         x, _ = self.lstm(x)
         return x
 
-    def encode(self, x):
+    def encode(self, x: torch.Tensor) -> torch.Tensor:
         x, h = self.lstm(x, self.h)
         self.h = h
         return x
@@ -78,13 +78,13 @@ class CPC(nn.Module):
         self.encoder = Encoder()
         self.context = Context()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.encoder(x).transpose(1, 2)
         c = self.context(x)
         return c, x
 
     @torch.no_grad()
-    def encode(self, x):
+    def encode(self, x: torch.Tensor) -> torch.Tensor:
         x = self.encoder(x).transpose(1, 2)
         c = self.context.encode(x)
         return c

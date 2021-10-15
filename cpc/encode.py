@@ -12,7 +12,7 @@ def encode_dataset(args):
     out_dir.mkdir(parents=True, exist_ok=True)
 
     print("Loading checkpoints")
-    cpc, kmeans = torch.hub.load("bshall/cpc", "cpc")
+    cpc, kmeans = torch.hub.load("bshall/cpc:main", "cpc")
     cpc = cpc.cuda()
 
     print(f"Encoding dataset at {in_dir}")
@@ -34,5 +34,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Preprocess an audio dataset.")
     parser.add_argument("in_dir", help="Path to the directory to encode.")
     parser.add_argument("out_dir", help="Path to the output directory.")
+    parser.add_argument()
     args = parser.parse_args()
     encode_dataset(args)

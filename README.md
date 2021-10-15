@@ -6,7 +6,7 @@ import torch, torchaudio
 from sklearn.preprocessing import StandardScaler
 
 # Load model checkpoints
-cpc, kmeans = torch.hub.load("bshall/cpc", "cpc")
+cpc, kmeans = torch.hub.load("bshall/cpc:main", "cpc")
 cpc = cpc.cuda()
 
 # Load audio

@@ -1,6 +1,6 @@
 # Contrastive Predictive Coding
 
-The CPC-big model and k-means checkpoint used in the paper [Analyzing Speaker Information in Self-Supervised Models to Improve Zero-Resource Speech Processing](https://arxiv.org/abs/2108.00917).
+The CPC-big model and k-means checkpoints used in [Analyzing Speaker Information in Self-Supervised Models to Improve Zero-Resource Speech Processing](https://arxiv.org/abs/2108.00917).
 
 Contrastive predictive coding (CPC) aims to learn representations of speech by distinguishing future observations from a set of negative examples. 
 Previous work has shown that linear classifiers trained on CPC features can accurately predict speaker and phone labels. 

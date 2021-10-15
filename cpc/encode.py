@@ -11,6 +11,7 @@ def encode_dataset(args):
     in_dir, out_dir = Path(args.in_dir), Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    print("Loading checkpoints")
     cpc, kmeans = torch.hub.load("bshall/cpc", "cpc")
     cpc = cpc.cuda()
 

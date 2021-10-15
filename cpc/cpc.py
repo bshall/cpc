@@ -5,9 +5,8 @@ from sklearn.cluster import KMeans
 from typing import Tuple
 
 URLS = {
-    "cpc": "",
-    "kmeans50": "",
-    "kmeans100": "",
+    "cpc": "https://github.com/bshall/cpc/releases/download/v0.1/cpc-d7475380.pt",
+    "kmeans50": "https://github.com/bshall/cpc/releases/download/v0.1/kmeans50-89accca9.pt",
 }
 
 
